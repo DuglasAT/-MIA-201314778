@@ -11,10 +11,13 @@ static int newline = '\n';
 static int sharp = '#';
 static int space = ' ';
 static int caso=0;
-int flag=0;
+static int long_reservadas=88;
+int band=0;
 
 
-static char * reservadas [] = {"mkdisk","-size","+unit","-path","-name",
+
+
+ char * reservadas [] = {"mkdisk","-size","+unit","-path","-name",
                                "rmdisk", //-path
                                "fdisk","+type","+fit","+delete","+add", //-size,+unit,-path,-name
                                "mount", //-path,-name
@@ -79,7 +82,22 @@ static int num(char n)
     return 0;
 }
 
-static void verifica_minuscula(char *cad)
+static int reserved(char *w)
+{
+  int i =0;
+  while(i<76)
+  {
+      if(strcmp(w,reservadas[i])==0)
+      {
+          return 1;
+      }
+
+        i++;
+    }
+  return 0;
+}
+
+static void to_lower(char *cad)
 {
     char cdobles='\"';
     while(*cad!='\0')
@@ -111,18 +129,92 @@ static void verifica_minuscula(char *cad)
     }
 }
 
+void read_file(char entrada[])
+{
+    FILE *script = fopen("/home/duglas/script.sh", "r" );
+    char aux[22000];
 
-void lexer(char buffer [] ){
 
-    int  i =0;
-    int longitud = strlen(&buffer[0]);
-    minusculas(&buffer[0]);
 
-    char dato [1000]={};
-    int pos_vector =0;
-    while (i<tamano){
-
+    if ( script!= NULL )
+    {
+     while (feof(script)==0)
+     {
+      fgets(aux,22000,script);
+      strcat(entrada,aux);
+     }
+    fclose(script);
+    }
+    else
+    {
+    printf( "Error al abrir el archivo.\n");
+    }
 }
+
+
+void automata(char entrada [] ){
+
+    int  i;
+    int  j=0;
+    int longitud = strlen(&entrada[0]);
+    to_lower(&entrada[0]);
+    char comand [2000]={};
+
+    for (i=0;i<longitud;i++){
+
+    switch(caso){
+
+    case 0:
+
+    if(letter(entrada[i]))
+    {
+
+    printf("%s es letra\n",&entrada[i]);
+
+    comand[j]=entrada[i];
+    caso = 1;
+    j++;
+    }
+    else if(num(entrada[i]))
+    {
+
+    printf("%s es numero\n",&entrada[i]);
+
+    }
+    else if(entrada[i]==space)
+    {
+    printf("%s es espacio\n",&entrada[i]);
+    }
+
+    break;
+
+    case 1:
+
+    if(entrada[i]==' ' || entrada[i]== '\n')
+    {
+    if(reserved(&comand[0]))
+    {
+     printf("es reservada\n");
+    }
+    else
+    {
+        printf("no es reservada\n");
+    }
+    }
+    else if(letter(entrada[i]))
+    {
+
+     comand[j]=entrada[i];
+     j++;
+    }
+
+    break;
+    default:
+    break;
+
+    }
+}
+
 }
 
 #endif // ANALIZADOR_H_INCLUDED

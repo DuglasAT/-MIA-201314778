@@ -4,15 +4,13 @@
 
 int main()
 {
-    printf("Hello world!\n");
 
-    printf("%d\n",letter('a'));
+    char entrada [500];
 
-    char buffer [] = "GOLAE";
 
-    verifica_minuscula(&buffer[0]);
 
-    printf("%s\n",buffer);
+    fgets(entrada,500,stdin);
+    automata(&entrada[0]);
 
     return 0;
 }
