@@ -2,16 +2,26 @@
 #define ANALIZADOR_H_INCLUDED
 
 #include <string.h>
-//#include <acciones.h> //verificar error luego - no encuentra el archivo o directorio
+#include "acciones.h"
 
 
 
 
-static int newline = '\n';
-static int sharp = '#'; // utilizada para comentarios
-static int space = ' ';
+static char newline = '\n';
+static char sharp = '#'; // utilizada para comentarios
+static char space = ' ';
+static char mas = '+';
+static char menos = '-';
+static char punto = '.';
+static char pcoma = ';';
+static char divide = '\\';
+static char slash = '/';
+static char comillas = '\"';
+
 static int caso=0;
 int band=0;
+int v=0;
+int o=0;
 
 
 
@@ -119,8 +129,65 @@ static int num(char n)
     return 0;
 }
 
+static int tipo_par_p(char t)
+{
 
-//verifica si una cadena de caracteres es una palabra reservada
+    if(t==mas||t==menos||t==punto)
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
+static int ispace(char t)
+{
+    if(t==space)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+
+static int isnewline_final(char t)
+{
+    if(t==newline||t==pcoma)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+static int isharp(char t)
+{
+    if(t==sharp)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+static int islash(char t)
+{
+    if(t==slash)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+static int fin(char t)
+{
+
+    if (t == pcoma)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+//verifica si una cĵĵĵĵĵ de caracteres es una palabra reservada
 static int reserved(char *w)
 {
     int c =0;
@@ -218,12 +285,12 @@ void automata(char entrada [] ){
 
 
     char aux [2000];
-     aux[0] = entrada[0];
+    aux[0] = entrada[0];
 
     int  c;
     int  k=0;
-   aux [0] = to_lower(&entrada[0]); // prueba de conversion
-   to_lower(&entrada[0]);
+    aux [0] = to_lower(&entrada[0]); // prueba de conversion
+    to_lower(&entrada[0]);
     char comand [2000];
 
     for (c=0;c<strlen(&entrada[0]);c++){
@@ -247,11 +314,12 @@ void automata(char entrada [] ){
                 printf("%s es numero\n",&entrada[c]);
 
             }
-            else if(entrada[c]==space)
+            else if(ispace(entrada[c]))
             {
                 printf("%s es espacio\n",&entrada[c]);
+                caso = 0;
             }
-            else if(entrada[c]==newline)
+            else if(isnewline_final(entrada[c]) || isharp(entrada[c]))
             {
                 printf("%s es salto de linea\n",&entrada[c]);
 
@@ -260,12 +328,23 @@ void automata(char entrada [] ){
             {
                 caso = 10;
             }
+            else if(islash(entrada[c]))
+            {
+                printf("%s es slash",&entrada[c]);
+                caso = 0;
+            }
+            else if(tipo_par_p(entrada[c]))
+            {
+                comand[k]=entrada[c];
+                k++;
+                caso = 1;
+            }
 
             break;
 
         case 1:
 
-            if(entrada[c]==' ' || entrada[c]== '\n')
+            if(ispace(entrada[c]))
             {
                 if(reserved(&comand[0]))
                 {

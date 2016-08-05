@@ -57,6 +57,12 @@ struct comando_mount
 typedef struct comando_mount * m_apunt;
 typedef struct comando_mount m;
 
+//struct para guardar cadenas
+struct stringc
+{
+    char valor [50];
+};
+typedef struct stringc mycad;
 
 //struct para el comando mount
 struct comando_unmount
@@ -69,12 +75,7 @@ typedef struct umount * um_apunt;
 typedef struct umount um;
 
 
-//struct para guardar cadenas
-struct stringc
-{
-    char valor [50];
-};
-typedef struct stringc mycad;
+
 
 
 
