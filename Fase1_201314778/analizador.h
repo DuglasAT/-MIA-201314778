@@ -322,6 +322,16 @@ void automata(char entrada [] ){
             else if(isnewline_final(entrada[c]) || isharp(entrada[c]))
             {
                 printf("%s es salto de linea\n",&entrada[c]);
+                //comienza
+
+
+                  int i=0;
+                  k=0;
+                  while(i<(strlen(comand)))
+                  {
+                    comand[i]='\0';
+                    i++;
+                  }
 
             }
             else if(entrada[c]==sharp)
@@ -352,8 +362,21 @@ void automata(char entrada [] ){
                 }
                 else
                 {
-                    printf("no es reservada\n");
+                    printf("%s: comando no encontrado",comand);
                 }
+
+                  int i=0;
+                  k=0;
+                  while(i<strlen(comand))
+                  {
+                    comand[i]='\0';
+                    i++;
+                  }
+            }
+            else if(isnewline_final(entrada))
+            {
+              printf("Comando no completado.");
+
             }
             else if(letter(entrada[c]))
             {
@@ -361,8 +384,39 @@ void automata(char entrada [] ){
                 comand[k]=entrada[c];
                 k++;
             }
+            else if(num(entrada[c]))
+            {
+
+                comand[k]=entrada[c];
+                k++;
+            }
+
 
             break;
+
+        case 2:
+
+            if(letter(entrada[c]))
+            {
+                comand[k]=entrada[c];
+                k++;
+            }
+            else if(num(entrada[c]))
+            {
+                comand[k]=entrada[c];
+                k++;
+            }
+            else if(ispace(entrada[c]))
+            {
+
+            }
+            else if(isharp(entrada[c])|isnewline_final(entrada[c]))
+            {
+
+            }
+
+            break;
+
         default:
             break;
 
