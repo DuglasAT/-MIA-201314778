@@ -36,6 +36,7 @@
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="simulacion.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />
