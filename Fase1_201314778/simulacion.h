@@ -45,6 +45,9 @@ struct arranque_EBR  //estructura par los ebr's de cada logica
 };
 typedef struct arranque_EBR e_ebr;
 
+
+e_ebr ebr2 [150]={};
+
 //--------------------------------------------------------------------------------------------------------
 void asignar_arranque_mbr(int longitud, char *ubicacion)//asigna el mbr y crea sus elementos
 {
@@ -64,7 +67,7 @@ void asignar_arranque_mbr(int longitud, char *ubicacion)//asigna el mbr y crea s
         //inicia atributos de la particion
         pt.part_status=pt.part_fit=pt.part_type='0';
         pt.part_size=pt.part_start=0;
-        strcpy(pt.part_name,"0");
+        strcpy(pt.part_name,"none");
 
         fwrite(&amp,sizeof(a_mbr),1,fichero);
         fclose(fichero);
@@ -80,7 +83,7 @@ ptn iniciapart(ptn p)
 
     p.part_fit = p.part_status = p.part_type = '0';
     p.part_size =p.part_start = 0;
-    strcpy(p.part_name,"0");
+    strcpy(p.part_name,"none");
 
     return p;
 
@@ -108,7 +111,7 @@ int change_arranque_MBR(char * namepartition, char *ubicacion)
     strcpy(namepart2aux,am2.mbr_part_2.part_name);
     char  namepart3aux [150] ;
     strcpy(namepart3aux,am2.mbr_part_3.part_name);
-    char  namepart4aux [150] ="hola";
+    char  namepart4aux [150] ;
     strcpy(namepart4aux,am2.mbr_part_4.part_name);
 
 
@@ -123,7 +126,7 @@ int change_arranque_MBR(char * namepartition, char *ubicacion)
     case 1:
 
         am2.mbr_part_1=iniciapart(am2.mbr_part_1);
-        strcpy(am2.mbr_part_1.part_name,"0");
+        strcpy(am2.mbr_part_1.part_name,"none");
         amwrite(am2,ubicacion);
         return 1;
         break;
@@ -131,12 +134,14 @@ int change_arranque_MBR(char * namepartition, char *ubicacion)
     case 2:
 
         am2.mbr_part_2=iniciapart(am2.mbr_part_2);
+        strcpy(am2.mbr_part_2.part_name,"none");
         amwrite(am2,ubicacion);
         return 1;
         break;
 
     case 3:
         am2.mbr_part_3=iniciapart(am2.mbr_part_3);
+        strcpy(am2.mbr_part_3.part_name,"none");
         amwrite(am2,ubicacion);
         return 1;
         break;
@@ -144,6 +149,7 @@ int change_arranque_MBR(char * namepartition, char *ubicacion)
     case 4:
 
         am2.mbr_part_4=iniciapart(am2.mbr_part_4);
+        strcpy(am2.mbr_part_4.part_name,"none");
         amwrite(am2,ubicacion);
         return 1;
         break;
@@ -181,7 +187,7 @@ void incia_part_EBR(char ubicacion[], int inicio)
     ebr1.part_start=inicio;
     ebr1.part_size=0;
     ebr1.part_next=-1;
-    strcpy(ebr1.part_name,"0");
+    strcpy(ebr1.part_name,"none");
 
     FILE * fichero3=(FILE*)malloc(sizeof(FILE));
     fichero3 = fopen(ubicacion,"rb+");
@@ -246,7 +252,7 @@ void nueva_particion(char sts,char ty,char ft,int sz,char *n,char*ub)
 
     FILE * fichero2 = fopen(ub,"rb+");
     if(fichero2){
-        if(fichero2!=NULL&((n_ext==1&n_prim<4&ty!='e')|(n_ext==0&n_prim<5)))
+        if(((n_ext==1&n_prim<4&ty!='e')|(n_ext==0&n_prim<5)))
         {
             fseek(fichero2,0*sizeof(a_mbr),SEEK_SET);
             int mbrsp=am2.mbr_longitud-220;
@@ -315,20 +321,20 @@ void nueva_particion(char sts,char ty,char ft,int sz,char *n,char*ub)
                 }
                 else
                 {
-                    printf("No hay suficiente espacio.\n");
+                    printf("---------------------No hay suficiente espacio.---------------------\n");
                 }
             }else{
-                printf("No hay suficiente espacio.\n");
+                printf("------------------------No hay suficiente espacio----------------------.\n");
             }
 
         }else{
-            printf("Existe extentida ya.\n");
+            printf("--------------------------Existe extentida ya.--------------------------\n");
         }
 
         fwrite(&am2,sizeof(a_mbr),1,fichero2);
         fclose(fichero2);
     }else{
-        printf("Disco no encontrado.\n\n");
+        printf("---------------------------Disco no encontrado.-----------------------------\n");
     }
 }
 
@@ -363,22 +369,22 @@ int isthere_part(char name [],char ubicacion [])
 e_ebr ant_EBR(char ub [],int sz){
 
     e_ebr ant_ebr;
-    FILE * fichero4;
+    FILE * fichero;
     int p=0;
-    fichero4 = fopen(ub,"rb");
+    fichero = fopen(ub,"rb");
 
-    if(fichero4!=NULL)
+    if(fichero!=NULL)
     {
         int sig=ebrpos=0;
 
         //obtener el MBR
-        FILE* fichero = fopen(ub,"rb");
+        FILE* fichero2 = fopen(ub,"rb");
         a_mbr am2 ={0,"",0,0,0,0};
-        if(fichero)
+        if(fichero2)
         {
-            fseek(fichero,0,SEEK_SET);
+            fseek(fichero2,0,SEEK_SET);
             fread(&am2,sizeof(a_mbr),1,fichero);
-            fclose(fichero);
+            fclose(fichero2);
         }
         else
         {
@@ -393,8 +399,8 @@ e_ebr ant_EBR(char ub [],int sz){
 
         while(sig!=-1)
         {
-            fseek(fichero4,ebrpos,SEEK_SET);
-            fread(&ant_ebr,sizeof(e_ebr),1,fichero4);
+            fseek(fichero,ebrpos,SEEK_SET);
+            fread(&ant_ebr,sizeof(e_ebr),1,fichero);
             sig = ant_ebr.part_next;
             ebrpos=ant_ebr.part_start+ant_ebr.part_size+xOS;
             p++;
@@ -402,17 +408,70 @@ e_ebr ant_EBR(char ub [],int sz){
             {
                 if(sz<ant_ebr.part_size)
                 {
-                    // ebr R
+
+ //-------------------------------------------------------------------------------------------------
+      e_ebr ebr1;
+      FILE * fichero3=fopen(ub,"rb");
+
+      if(fichero3){
+          int sig2 =0;
+          int pos=ebrpos-ebr1.part_size-xOS,pos2=ebrpos-ebr1.part_size-xOS;
+                int p;
+          for(p=0;sig2!=-1;p++){
+
+              if(sig2){
+
+              fseek(fichero3,pos,SEEK_SET);
+              fread(&ebr1,sizeof(e_ebr),1,fichero3);
+              sig2=ebr1.part_next;
+              }
+              else
+              {
+              fseek(fichero3,sig,SEEK_SET);
+              fread(&ebr1,sizeof(e_ebr),1,fichero3);
+              sig2=ebr1.part_next;
+              }
+
+              if(ebr1.part_next!=-1){
+
+              if(pos2==pos)
+              {
+              ebr1.part_next-=ebr1.part_size-sz;
+              }
+              else
+              {
+                  ebr1.part_next-=ebr1.part_size-sz;
+                  ebr1.part_start-=ebr1.part_size-sz;
+              }
+
+              }
+
+              pos2=ebr1.part_size+ebr1.part_size+xOS;
+              ebr2[p]=ebr1;
+            }
+      FILE * fichero4=fopen(ub,"rb+");
+      if(fichero4){
+          int c=0;
+          while(c<p){
+              fseek(fichero4,pos,SEEK_SET);
+              fwrite(&ebr2[c],sizeof(e_ebr),1,fichero4);
+              pos=ebr2[c].part_next;
+              c++;
+            }
+          fclose(fichero4);
+        }
+          fclose(fichero3);
+        }
+  //------------------------------------------------------------------------
+
                 }
 
-                if(ant_ebr.part_next!=-1){
-                    ant_ebr.part_next=ant_ebr.part_next-(ant_ebr.part_size-sz);
-                }
+               ant_ebr.part_next = ant_ebr.part_next!=-1 ? ant_ebr.part_next-(ant_ebr.part_size-sz) :ant_ebr.part_next;
                 break;
             }
 
         }
-        fclose(fichero4);
+        fclose(fichero);
     }
 }
 //--------------------------------------------------------------------------------------------------------
@@ -516,23 +575,23 @@ void add_EBR_Part(char sts,char ft,int srt,int sz,int nx,char nm[],char ub[])
                 }
                 else
                 {
-                    printf("Error al verificar el estado.\n");
+                    printf("------------------------------Error al verificar el estado.------------------------------\n");
                 }
                 fclose(fichero2);
             }
             else
             {
-                printf("No hay disco\n");
+                printf("------------------------------No hay disco------------------------------\n");
             }
         }
         else
         {
-            printf("Espacio insuficiente para particion logica\n");
+            printf("------------------------------Espacio insuficiente para particion logica------------------------------\n");
         }
     }
     else
     {
-        printf("Cree antes una particion extendida\n");
+        printf("------------------------------Crear antes una particion extendida------------------------------\n");
     }
 
 }

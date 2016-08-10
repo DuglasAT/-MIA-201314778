@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1470608345 source:/home/duglas/Fase1_201314778/Fase1_201314778/main.c
+1470800090 source:/home/duglas/Fase1_201314778/Fase1_201314778/main.c
 	<stdio.h>
 	<stdlib.h>
 	"analizador.h"
 	"simulacion.h"
 
-1470621731 /home/duglas/Fase1_201314778/Fase1_201314778/analizador.h
+1470809137 /home/duglas/Fase1_201314778/Fase1_201314778/analizador.h
 	<string.h>
 	"acciones.h"
 
@@ -13,6 +13,6 @@
 	<stdio.h>
 	<stdlib.h>
 
-1470712862 /home/duglas/Fase1_201314778/Fase1_201314778/simulacion.h
+1470805355 /home/duglas/Fase1_201314778/Fase1_201314778/simulacion.h
 	<time.h>
 

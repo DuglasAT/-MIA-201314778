@@ -14,6 +14,7 @@ static char mas = '+';
 static char menos = '-';
 static char punto = '.';
 static char pcoma = ';';
+static char dosp = ':';
 static char divide = '\\';
 static char slash = '/';
 static char comillas = '\"';
@@ -68,13 +69,13 @@ char * reservadas [] = {
 };
 
 //contendor para los comandos
-struct contenedor
+struct cont
 {
     char id [450];
     char cont[450];
 };
-typedef struct contenedor cont;
-cont varios[20];
+typedef struct cont contiene;
+contiene contenedor[20];
 
 
 //conjunto de comandos - verificar idea luego
@@ -88,18 +89,6 @@ struct conjunto
 };
 typedef struct conjunto conto;
 conto contos[10];
-
-
-//llena el contenedor con valores 0 para utilizarlo luego
-void contenedor_add()
-{
-    int  c=0;
-    while(c<20)
-    {
-        strcpy(varios[c].id,"0");
-        c++;
-    }
-}
 
 
 //verifica si un caracter es letra
@@ -187,6 +176,15 @@ static int fin(char t)
     return 0;
 }
 
+static int isdoublep(char t)
+{
+ if (t == dosp)
+    {
+        return 1;
+    }
+    return 0;
+}
+
 //verifica si una cĵĵĵĵĵ de caracteres es una palabra reservada
 static int reserved(char *w)
 {
@@ -265,15 +263,8 @@ void read_file(char entrada[])
 }
 
 
-//correr el comando elegido - falta implementar - no iniciado
-void iniciar_comando(cont scan[])
-{
-
-}
-
-
 //metodo para crear el archivo binario que simula el disco - falta implementar - no iniciado
-void mkdisk(int longitud, cont scan[])
+void mkdisk(int longitud, contiene scan[])
 {
 
 }
@@ -281,7 +272,7 @@ void mkdisk(int longitud, cont scan[])
 
 
 //automata que reconoce la entrada de comandos - no terminado
-void automata(char entrada [] ){
+void automata(char entrada [] ) {
 
 
     char aux [2000];
@@ -289,9 +280,16 @@ void automata(char entrada [] ){
 
     int  c;
     int  k=0;
+    int  cmd=0;
     aux [0] = to_lower(&entrada[0]); // prueba de conversion
     to_lower(&entrada[0]);
     char comand [2000];
+
+    int  o=0;
+    while(o<20){
+        strcpy(contenedor[o].id,"none");
+    o++;
+    }
 
     for (c=0;c<strlen(&entrada[0]);c++){
 
@@ -319,20 +317,28 @@ void automata(char entrada [] ){
                 printf("%s es espacio\n",&entrada[c]);
                 caso = 0;
             }
-            else if(isnewline_final(entrada[c]) || isharp(entrada[c]))
+            else if(isnewline_final(entrada[c]) || isharp(entrada[c])||fin(entrada[c]))
             {
                 printf("%s es salto de linea\n",&entrada[c]);
                 //comienza
+                  strcpy(contenedor[cmd].cont,comand);
+                  cmd++;
 
-
-                  int i=0;
-                  k=0;
-                  while(i<(strlen(comand)))
+                  int cc=0;
+                  k=caso=0;
+                  while(cc<(strlen(comand)))
                   {
-                    comand[i]='\0';
-                    i++;
+                    comand[cc]='\0';
+                    cc++;
                   }
 
+                  //guardar comando()
+
+                  cc=0;
+                  while(cc<20){
+                        strcpy(contenedor[cc].id,"none");
+                        cc++;
+                    }
             }
             else if(entrada[c]==sharp)
             {
@@ -359,19 +365,29 @@ void automata(char entrada [] ){
                 if(reserved(&comand[0]))
                 {
                     printf("es reservada\n");
+                    strcpy(contenedor[cmd].cont,comand);
+                  cmd++;
+
+                  int cc=0;
+                  k=caso=0;
+                  while(cc<(strlen(comand)))
+                  {
+                    comand[cc]='\0';
+                    cc++;
+                  }
+
                 }
                 else
                 {
                     printf("%s: comando no encontrado",comand);
-                }
-
-                  int i=0;
-                  k=0;
-                  while(i<strlen(comand))
+                    int cc=0;
+                  k=caso=0;
+                  while(cc<(strlen(comand)))
                   {
-                    comand[i]='\0';
-                    i++;
+                    comand[cc]='\0';
+                    cc++;
                   }
+                }
             }
             else if(isnewline_final(entrada))
             {
@@ -390,11 +406,47 @@ void automata(char entrada [] ){
                 comand[k]=entrada[c];
                 k++;
             }
+            else if(isharp(entrada[c]))
+            {
+               caso=10;
+            }
+            else if(isdoublep(entrada[c]))
+            {
+                            if(reserved(&comand[0]))
+                {
+                    printf("es reservada\n");
+                    strcpy(contenedor[cmd].cont,comand);
+                  cmd++;
+
+                  int cc=0;
+                  k=0;
+                  caso=3;
+                  while(cc<(strlen(comand)))
+                  {
+                    comand[cc]='\0';
+                    cc++;
+                  }
+
+                }
+                else
+                {
+                    printf("%s: comando no encontrado",comand);
+                    int cc=0;
+                  k=0;
+                  caso=3;
+                  while(cc<(strlen(comand)))
+                  {
+                    comand[cc]='\0';
+                    cc++;
+                  }
+                }
+
+            }
 
 
             break;
 
-        case 2:
+        case 3:
 
             if(letter(entrada[c]))
             {
@@ -418,6 +470,8 @@ void automata(char entrada [] ){
             break;
 
         default:
+           printf("coment");//temporal
+
             break;
 
         }

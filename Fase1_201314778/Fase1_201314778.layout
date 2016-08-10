@@ -6,19 +6,19 @@
 			<Cursor1 position="1102" topLine="47" />
 		</Cursor>
 	</File>
+	<File name="simulacion.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="14996" topLine="223" />
+		</Cursor>
+	</File>
 	<File name="main.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="438" topLine="0" />
+			<Cursor1 position="438" topLine="1" />
 		</Cursor>
 	</File>
-	<File name="simulacion.h" open="1" top="1" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="analizador.h" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="6067" topLine="256" />
-		</Cursor>
-	</File>
-	<File name="analizador.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="6993" topLine="195" />
+			<Cursor1 position="4908" topLine="283" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
