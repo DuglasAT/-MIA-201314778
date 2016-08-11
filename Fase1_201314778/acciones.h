@@ -43,7 +43,7 @@ struct comando_fdisk
 
 };
 typedef struct comando_fdisk * fd_apunt;
-typedef struct comando_fddisk fd;
+typedef struct comando_fdisk fdd;
 
 
 
@@ -73,6 +73,21 @@ struct comando_unmount
 };
 typedef struct umount * um_apunt;
 typedef struct umount um;
+
+
+struct tipoComando{
+
+    mkd mkdisk;
+    rmd mrdisk;
+    fdd fdisk;
+
+    char tipo [40];
+};
+typedef struct tipoComando tComand;
+tComand t_comandos[50];
+
+
+
 
 
 

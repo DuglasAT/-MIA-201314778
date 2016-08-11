@@ -6,7 +6,6 @@
 
 
 
-
 static char newline = '\n';
 static char sharp = '#'; // utilizada para comentarios
 static char space = ' ';
@@ -18,6 +17,7 @@ static char dosp = ':';
 static char divide = '\\';
 static char slash = '/';
 static char comillas = '\"';
+static char point = '.';
 
 static int caso=0;
 int band=0;
@@ -75,8 +75,8 @@ struct cont
     char cont[450];
 };
 typedef struct cont contiene;
-contiene contenedor[20];
 
+    contiene contenedor[50];
 
 //conjunto de comandos - verificar idea luego
 struct conjunto
@@ -157,6 +157,16 @@ static int isharp(char t)
     return 0;
 }
 
+
+static int ispoint(char t)
+{
+    if(t==point)
+    {
+        return 1;
+    }
+    return 0;
+}
+
 static int islash(char t)
 {
     if(t==slash)
@@ -179,6 +189,15 @@ static int fin(char t)
 static int isdoublep(char t)
 {
  if (t == dosp)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+static int iscomillas(char t)
+{
+ if (t == comillas)
     {
         return 1;
     }
@@ -286,7 +305,7 @@ void automata(char entrada [] ) {
     char comand [2000];
 
     int  o=0;
-    while(o<20){
+    while(o<50){
         strcpy(contenedor[o].id,"none");
     o++;
     }
@@ -326,16 +345,17 @@ void automata(char entrada [] ) {
 
                   int cc=0;
                   k=caso=0;
-                  while(cc<(strlen(comand)))
+                  int comandlen = strlen(comand);
+                  while(cc<comandlen)
                   {
                     comand[cc]='\0';
                     cc++;
                   }
 
-                  //guardar comando()
+          //       agregar_ins(contenedor);
 
                   cc=0;
-                  while(cc<20){
+                  while(cc<50){
                         strcpy(contenedor[cc].id,"none");
                         cc++;
                     }
@@ -365,12 +385,15 @@ void automata(char entrada [] ) {
                 if(reserved(&comand[0]))
                 {
                     printf("es reservada\n");
-                    strcpy(contenedor[cmd].cont,comand);
+                    strcpy(contenedor[cmd].id,comand);
                   cmd++;
 
                   int cc=0;
                   k=caso=0;
-                  while(cc<(strlen(comand)))
+
+                  int comandlen = strlen(comand);
+
+                  while(cc<comandlen)
                   {
                     comand[cc]='\0';
                     cc++;
@@ -382,7 +405,8 @@ void automata(char entrada [] ) {
                     printf("%s: comando no encontrado",comand);
                     int cc=0;
                   k=caso=0;
-                  while(cc<(strlen(comand)))
+                  int comandlen = strlen(comand);
+                  while(cc<comandlen)
                   {
                     comand[cc]='\0';
                     cc++;
@@ -400,6 +424,10 @@ void automata(char entrada [] ) {
                 comand[k]=entrada[c];
                 k++;
             }
+            else if(ispoint(entrada[c])){
+                comand[k]=entrada[c];
+                k++;
+            }
             else if(num(entrada[c]))
             {
 
@@ -412,16 +440,16 @@ void automata(char entrada [] ) {
             }
             else if(isdoublep(entrada[c]))
             {
-                            if(reserved(&comand[0]))
+                if(reserved(&comand[0]))
                 {
                     printf("es reservada\n");
-                    strcpy(contenedor[cmd].cont,comand);
-                  cmd++;
+                    strcpy(contenedor[cmd].id,comand);
 
                   int cc=0;
                   k=0;
                   caso=3;
-                  while(cc<(strlen(comand)))
+                  int comandlen = strlen(comand);
+                  while(cc<comandlen)
                   {
                     comand[cc]='\0';
                     cc++;
@@ -434,7 +462,10 @@ void automata(char entrada [] ) {
                     int cc=0;
                   k=0;
                   caso=3;
-                  while(cc<(strlen(comand)))
+
+                  int comandlen = strlen(comand);
+
+                  while(cc<comandlen)
                   {
                     comand[cc]='\0';
                     cc++;
@@ -446,7 +477,7 @@ void automata(char entrada [] ) {
 
             break;
 
-        case 3:
+        case 2:
 
             if(letter(entrada[c]))
             {
@@ -460,21 +491,145 @@ void automata(char entrada [] ) {
             }
             else if(ispace(entrada[c]))
             {
-
+                    strcpy(contenedor[cmd].cont,comand);
+                    cmd++;
+                  int cc=0;
+                  k=caso=0;
+                  int comandlen = strlen(comand);
+                  while(cc<comandlen)
+                  {
+                    comand[cc]='\0';
+                    cc++;
+                  }
+            }
+            else if(ispoint(entrada[c])){
+                comand[k]=entrada[c];
+                k++;
+            }
+            else if(isharp(entrada[c]))
+            {
+                caso=10;
             }
             else if(isharp(entrada[c])|isnewline_final(entrada[c]))
             {
+                printf("%s es salto de linea\n",&entrada[c]);
+                //comienza
+                  strcpy(contenedor[cmd].cont,comand);
+                  cmd++;
 
+                  int cc=0;
+                  k=caso=0;
+                  int comandlen = strlen(comand);
+                  while(cc<comandlen)
+                  {
+                    comand[cc]='\0';
+                    cc++;
+                  }
+
+                  //guardar comando()
+                  agregar_ins(contenedor);
+
+                  cc=0;
+                  while(cc<20){
+                        strcpy(contenedor[cc].id,"none");
+                        cc++;
+                    }
+            }
+            else if(iscomillas(entrada[c]))
+            {
+              caso=5;
+            }
+
+
+            break;
+
+            case 3:
+
+            if(isharp(entrada[c]))
+                {
+                caso=10;
+            }
+            else if(isdoublep(entrada[c]))
+            {
+                caso=2;
+            }
+            else
+            {
+                printf("Error al leer comando.");
+            }
+
+            break;
+
+            case 5  :
+
+             if(isharp(entrada[c]))
+             {
+                comand[k]=entrada[c];
+
+                caso = 10;
+                k++;
+            }
+            else if(!iscomillas(entrada[c])&!isnewline_final(entrada[c]))
+            {
+                comand[k]=entrada[c];
+                k++;
+            }
+            else if(iscomillas(entrada[c]))
+            {
+                caso=2;
+            }
+            else if(isnewline_final(entrada[c]))
+            {
+                printf("Error al en el cierre de comillas");
             }
 
             break;
 
         default:
            printf("coment");//temporal
+            if(isnewline_final(entrada[c]))
+            {
+                caso = 0;
+            }
 
             break;
 
         }
+    }
+
+}
+
+int instruc=0;
+
+void define_instruc (contiene aux[],int inst, int i)
+{
+
+
+
+inst =0;
+
+printf("%s",aux[i].id);
+
+
+
+}
+
+
+void agregar_ins(contiene aux[])
+{
+int inst = 0;
+    int c=0;
+    while(c<50)
+    {
+
+printf("%s",aux[c].id);
+        inst = !strcmp(aux[c].id,"mkdisk") ? 1 : inst;
+        inst = !strcmp(aux[c].id,"mrdisk") ? 2 : inst;
+        inst = !strcmp(aux[c].id,"fdisk") ? 3 : inst;
+
+        strcpy(&t_comandos[c].mkdisk.nombre,"hola");
+
+    c++;
     }
 
 }
